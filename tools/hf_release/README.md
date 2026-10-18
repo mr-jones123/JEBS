@@ -107,7 +107,7 @@ All numbers come from one training run per version.
 - **Video.** Four frames compile to two temporal positions. Held-out video scores 41%, close to chance.
 - **Real photographs and real documents.** Counting objects in photos scores 53% in distribution. Real document regions score 64.5%.
 - **Calibration out of distribution.** ECE rises from 0.87% to 3.75%, and it is worse on unfamiliar task families.
-- **Not measured.** Option-order sensitivity, blank or wrong media controls, CUDA latency and peak memory, and variation across training seeds.
+- **Not measured.** Option-order sensitivity, blank or wrong media controls, batched throughput, GPUs with less than 24 GB, and variation across training seeds.
 - **No human review.** Every label and check is automated.
 
 Do not use JEBS-4B for automated decisions with legal, financial, medical, employment, or access consequences for people. Use it as a research model, or as a triage step with a person reviewing its output.
@@ -116,10 +116,10 @@ Do not use JEBS-4B for automated decisions with legal, financial, medical, emplo
 
 You need either Linux with a CUDA GPU that supports BF16, or an Apple Silicon Mac with 16 GB of memory or more ([Run it on a Mac](#run-it-on-a-mac)). On CUDA we ran it on an RTX 3090 and an RTX 4090, both with 24 GB. You also need Python 3.12 and [uv](https://docs.astral.sh/uv/). The loader pins `transformers` 5.19.0 and `torch` 2.14.1 and refuses other versions, so install from the lock file.
 
-1. Download this repository.
+1. Download this repository. `uvx` runs the Hugging Face CLI without installing it.
 
 	```sh
-	hf download experimentalmachines/JEBS-4B --local-dir JEBS-4B
+	uvx --from huggingface_hub hf download experimentalmachines/JEBS-4B --local-dir JEBS-4B
 	cd JEBS-4B
 	```
 
@@ -152,6 +152,20 @@ You need either Linux with a CUDA GPU that supports BF16, or an Apple Silicon Ma
 Each line of `predictions.jsonl` holds `id`, `probabilities` (one per option key), `predicted_key`, `expected_score` (for `score` questions), `artifact_id`, `processor_id`, `calibration_id`, and `policy`. The `artifact_id` is `21bcc482ada605d4b197210cf7a8a3175fd8c401883908c10bb26dbcf6ed8f60`. The loader checks the seal over `model/` and refuses a modified artifact.
 
 To keep the base model somewhere else, set `HF_HUB_CACHE` to that cache directory.
+
+### Speed and memory on CUDA
+
+We installed this repository from scratch on a rented RTX 4090 with the steps above and timed the 1,080-question rule probe. `predict` answers one question per forward pass.
+
+| Measure | RTX 4090 |
+|---|---|
+| Load time | 11 seconds |
+| Latency per question | 109 ms median, 128 ms at the 95th percentile, 140 ms maximum |
+| Throughput | 9.0 questions per second |
+| GPU memory | 8.4 GB after loading, 8.6 GB peak allocated, 8.8 GB peak reserved |
+| Same answer as the RTX 3090 run | 1,078 of 1,080 |
+
+`tools/cuda_benchmark.py` in [the code repository](https://github.com/mr-jones123/JEBS) reproduces these numbers. The peak suggests that a 12 GB GPU with BF16 support could run the model, but we have not tested one.
 
 ### Run it on a Mac
 

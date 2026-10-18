@@ -107,10 +107,6 @@ def create_volume(args: argparse.Namespace) -> None:
 
 
 def create_pod(args: argparse.Namespace) -> None:
-    volumes = {volume["id"]: volume for volume in _request("GET", f"{REST}/networkvolumes")}
-    if args.volume_id not in volumes:
-        raise SystemExit(f"network volume {args.volume_id} not found: {sorted(volumes)}")
-    datacenter = volumes[args.volume_id]["dataCenterId"]
     body = {
         "name": args.name,
         "imageName": IMAGE,
@@ -118,11 +114,16 @@ def create_pod(args: argparse.Namespace) -> None:
         "gpuTypeIds": [args.gpu],
         "gpuCount": 1,
         "containerDiskInGb": args.container_disk,
-        "networkVolumeId": args.volume_id,
-        "volumeMountPath": "/workspace",
-        "dataCenterIds": [datacenter],
         "ports": ["22/tcp"],
     }
+    datacenter = "any Secure Cloud datacenter"
+    # Without a volume the container disk is lost on stop; use it only for runs that pull nothing back.
+    if args.volume_id:
+        volumes = {volume["id"]: volume for volume in _request("GET", f"{REST}/networkvolumes")}
+        if args.volume_id not in volumes:
+            raise SystemExit(f"network volume {args.volume_id} not found: {sorted(volumes)}")
+        datacenter = volumes[args.volume_id]["dataCenterId"]
+        body.update(networkVolumeId=args.volume_id, volumeMountPath="/workspace", dataCenterIds=[datacenter])
     pod = _act(args, "POST", f"{REST}/pods", body)
     if pod is None:
         return
@@ -171,7 +172,7 @@ def main() -> None:
             command.add_argument("--datacenter", required=True)
             command.add_argument("--allow-no-stock", action="store_true")
         if name == "create-pod":
-            command.add_argument("--volume-id", required=True)
+            command.add_argument("--volume-id", help="attach this network volume; omit for a throwaway pod")
             command.add_argument("--name", default="jebs-v3")
             command.add_argument("--container-disk", type=int, default=30)
         if name == "delete-volume":
