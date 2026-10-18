@@ -20,6 +20,8 @@ JEBS-4B is a decision model. It reads a state (text, an image, or a short video)
 
 It is a LoRA adapter and a small decision readout on a frozen `Qwen/Qwen3-VL-4B-Instruct`. This is the third trained version (v3) of a research project. It is an experiment, not a production system. Read [Limits](#limits) before you use it.
 
+The code that prepared the data, trained, and evaluated the model is at [github.com/mr-jones123/JEBS](https://github.com/mr-jones123/JEBS).
+
 ## The idea: replace the vocabulary head with a decision head
 
 A language model ends in a vocabulary head. At each position it scores about 150,000 tokens and picks the next one. To make a decision with it, you ask it to write an answer and maybe a confidence, then parse the text. The answer arrives one token at a time, the confidence is just more generated text, and nothing ties the output to the options you meant.
