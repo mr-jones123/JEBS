@@ -7,6 +7,7 @@ import math
 import os
 import re
 import tempfile
+import sys
 from pathlib import Path
 from typing import Sequence
 
@@ -32,11 +33,22 @@ HOST_MEMORY_DEVICES = ("cpu", "mps")
 
 
 def admit_host_memory(total_bytes: int, device: str) -> None:
-    needed = total_bytes + 1536 * 1024 ** 2
-    available = psutil.virtual_memory().available
-    if needed > 11 * 1024 ** 3 or needed + 2 * 1024 ** 3 > available:
-        raise MemoryError(f"Loading the BF16 base on {device} needs {(needed + 2 * 1024 ** 3) / 1024 ** 3:.1f} GiB "
-                          f"of free memory; {available / 1024 ** 3:.1f} GiB is available. Close other apps and retry.")
+    needed = total_bytes + 1536 * 1024 ** 2 + 2 * 1024 ** 3
+    memory = psutil.virtual_memory()
+    if device == "mps":
+        # macOS pages unified memory to swap. A 16 GiB M4 with 7.2 GiB free swapped 2.7 GiB
+        # and still matched 1,077 of 1,080 CUDA answers, so only total memory is a hard limit.
+        if needed > memory.total:
+            raise MemoryError(f"Loading the BF16 base on mps needs {needed / 1024 ** 3:.1f} GiB of unified memory; "
+                              f"this Mac has {memory.total / 1024 ** 3:.1f} GiB.")
+        if needed > memory.available:
+            print(f"warning: {memory.available / 1024 ** 3:.1f} GiB is free and the model is best with "
+                  f"{needed / 1024 ** 3:.1f} GiB, so macOS will swap and predictions will be slower. "
+                  "Close other apps to avoid it.", file=sys.stderr)
+        return
+    if needed - 2 * 1024 ** 3 > 11 * 1024 ** 3 or needed > memory.available:
+        raise MemoryError(f"Loading the BF16 base on {device} needs {needed / 1024 ** 3:.1f} GiB "
+                          f"of free memory; {memory.available / 1024 ** 3:.1f} GiB is available. Close other apps and retry.")
 
 
 def environment() -> dict:

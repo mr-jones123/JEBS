@@ -66,6 +66,8 @@ Smoke output directories must be new. Complete the pinned base download before m
 
 Use one RTX 4090 or RTX 3090 with 24 GB VRAM. The CUDA preflight refuses any other GPU. The locked Linux stack uses CUDA 13 dependencies, so the host needs NVIDIA driver 580 or newer. A different container cannot upgrade the host driver. `RUNPOD.md` contains transfer, installation, launch, recovery, and final-evaluation commands. `scripts/runpod_pod.py` creates the network volume and pod, and `scripts/v3-run.sh` and `scripts/v3-finish.sh` run a full cycle on it.
 
+Inference also runs on an Apple Silicon Mac with `--device mps` for `predict` and `evaluate`. Training and finalization stay on CUDA. On a 16 GB M4 the full v3 model matched 1,077 of 1,080 CUDA answers on the rule probe. `.audit/mps-run/` holds that local receipt, and the model card on Hugging Face has the measurements.
+
 The public CLI supervises paid work in its own process group. It requests a reserve-aware graceful checkpoint and enforces a process deadline. It does not stop the Pod or provider billing. The operator must stop the Pod or configure a separate provider-side stop.
 
 The ledger allows $8 of elapsed time, priced at the pod's own `costPerHr`: 57,600 seconds at $0.50/hour and 32,359 seconds at $0.89/hour. It counts allocation wall time, including setup and downtime. A full epoch is attempted only if measured preflight forecasts and fixed-question diagnostic/pilot gates permit it. No total-cost or quality guarantee is made.
