@@ -3,6 +3,7 @@
 import copy
 import hashlib
 import json
+import unittest
 from pathlib import Path
 
 
@@ -254,6 +255,8 @@ def test_structure_scorer_reports_both_correct_per_pair():
     }
 
 
+@unittest.skipUnless((ROOT / ".audit/rule-variants-admission-baseline/hashes.json").is_file(),
+                     "needs the local locked splits and admission receipt, which are not published")
 def test_locked_splits_and_policy_match_the_admission_baseline():
     receipt_path = ROOT / ".audit" / "rule-variants-admission-baseline" / "hashes.json"
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))

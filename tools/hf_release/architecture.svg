@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" width="1000" height="600" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 800" width="1000" height="800" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
@@ -11,12 +11,12 @@
     </marker>
   </defs>
 
-  <rect x="0" y="0" width="1000" height="600" rx="16" fill="#ffffff"/>
+  <rect x="0" y="0" width="1000" height="800" rx="16" fill="#ffffff"/>
 
   <text x="32" y="44" font-size="22" font-weight="700" fill="#111827">JEBS-4B replaces the vocabulary head with a decision head</text>
   <text x="32" y="70" font-size="14" fill="#4b5563">One forward pass returns one calibrated probability per supplied option. No text is generated.</text>
 
-  <!-- Request -->
+  <!-- 1. Request -->
   <rect x="32" y="100" width="250" height="262" rx="12" fill="#f9fafb" stroke="#d1d5db"/>
   <text x="52" y="128" font-size="15" font-weight="700" fill="#111827">1. Request</text>
   <text x="52" y="156" font-size="13" fill="#374151">State: text, an image,</text>
@@ -34,7 +34,7 @@
     <rect x="214" y="310" width="48" height="30" rx="5" fill="#fde68a" stroke="#b45309"/><text x="218" y="329">decide</text>
   </g>
 
-  <!-- Body -->
+  <!-- 2. Body -->
   <rect x="330" y="100" width="270" height="262" rx="12" fill="#f3f4f6" stroke="#9ca3af"/>
   <text x="350" y="128" font-size="15" font-weight="700" fill="#111827">2. Qwen3-VL-4B-Instruct body</text>
   <text x="350" y="148" font-size="12" fill="#4b5563">Pretrained weights frozen, BF16</text>
@@ -59,10 +59,10 @@
   <text x="668" y="154" font-size="12" fill="#9ca3af">151,936 logits per position.</text>
   <text x="668" y="172" font-size="12" fill="#9ca3af">Generates the answer one token at a time,</text>
   <text x="668" y="190" font-size="12" fill="#9ca3af">and confidence is just more text.</text>
-  <path d="M600,150 C625,150 625,150 644,150" fill="none" stroke="#9ca3af" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#arrow-gray)"/>
+  <path d="M600,150 L644,150" fill="none" stroke="#9ca3af" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#arrow-gray)"/>
 
-  <!-- Decision readout -->
-  <rect x="648" y="224" width="320" height="346" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+  <!-- 3. Decision readout -->
+  <rect x="648" y="224" width="320" height="226" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
   <text x="668" y="252" font-size="15" font-weight="700" fill="#1e3a8a">3. Decision readout, trained</text>
   <rect x="668" y="266" width="134" height="56" rx="8" fill="#ffffff" stroke="#93c5fd"/>
   <text x="678" y="286" font-size="12" fill="#1e3a8a">h_i at each</text>
@@ -77,24 +77,7 @@
   <text x="668" y="402" font-size="12" fill="#4b5563">Bias-free projections, FP32. Padded slots masked.</text>
   <text x="668" y="420" font-size="12" fill="#4b5563">Divide by temperature T = 1.9185, then softmax</text>
   <text x="668" y="436" font-size="12" fill="#4b5563">over the supplied options only.</text>
-  <path d="M600,300 C624,300 624,300 644,300" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
-
-  <text x="668" y="466" font-size="12" font-weight="700" fill="#111827">Example output (examples/requests.jsonl)</text>
-  <g font-size="12" fill="#374151">
-    <text x="668" y="490">release</text>
-    <rect x="760" y="480" width="160" height="12" rx="3" fill="#dbeafe"/>
-    <text x="928" y="491">0.00</text>
-    <text x="668" y="512" font-weight="700" fill="#1e3a8a">review</text>
-    <rect x="760" y="502" width="160" height="12" rx="3" fill="#dbeafe"/>
-    <rect x="760" y="502" width="160" height="12" rx="3" fill="#2563eb"/>
-    <text x="928" y="513" font-weight="700" fill="#1e3a8a">1.00</text>
-    <text x="668" y="534">return</text>
-    <rect x="760" y="524" width="160" height="12" rx="3" fill="#dbeafe"/>
-    <text x="928" y="535">0.00</text>
-    <text x="668" y="556">insufficient</text>
-    <rect x="760" y="546" width="160" height="12" rx="3" fill="#dbeafe"/>
-    <text x="928" y="557">0.00</text>
-  </g>
+  <path d="M600,300 L644,300" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
 
   <!-- Key -->
   <text x="32" y="402" font-size="13" font-weight="700" fill="#111827">What trains and what stays frozen</text>
@@ -104,6 +87,48 @@
     <rect x="32" y="468" width="16" height="16" rx="3" fill="#eff6ff" stroke="#2563eb"/><text x="58" y="481">Trained: the two readout projections, W_c and W_d</text>
     <rect x="32" y="494" width="16" height="16" rx="3" fill="#ffffff" stroke="#9ca3af" stroke-dasharray="4 3"/><text x="58" y="507">Unused: the vocabulary head</text>
   </g>
-  <text x="32" y="540" font-size="12" fill="#6b7280">Question types share the readout: choice (named options), noul (false, true), score (ordered levels 0 to n).</text>
-  <text x="32" y="560" font-size="12" fill="#6b7280">Training: 100 readout-only updates, then 2,080 joint updates, cross-entropy over each question's options.</text>
+  <text x="350" y="402" font-size="12" fill="#4b5563">Training: 100 readout-only updates,</text>
+  <text x="350" y="420" font-size="12" fill="#4b5563">then 2,080 joint updates.</text>
+  <text x="350" y="438" font-size="12" fill="#4b5563">Loss: cross-entropy over each</text>
+  <text x="350" y="456" font-size="12" fill="#4b5563">question's supplied options.</text>
+
+  <!-- Three question types -->
+  <line x1="32" y1="532" x2="968" y2="532" stroke="#e5e7eb"/>
+  <text x="32" y="562" font-size="16" font-weight="700" fill="#111827">Three question types share the one readout</text>
+  <text x="32" y="582" font-size="12" fill="#6b7280">Measured outputs for examples/requests.jsonl on an RTX 3090. The bold row is the predicted option.</text>
+
+  <!-- choice -->
+  <rect x="32" y="598" width="300" height="180" rx="12" fill="#f9fafb" stroke="#d1d5db"/>
+  <text x="50" y="624" font-size="15" font-weight="700" font-family="Menlo, Consolas, monospace" fill="#111827">choice</text>
+  <text x="50" y="644" font-size="12" fill="#4b5563">Pick one named option.</text>
+  <text x="50" y="662" font-size="11" fill="#6b7280">Shipment policy, verified address, 23 kg</text>
+  <g font-size="12" fill="#374151">
+    <text x="50" y="690">release</text><rect x="140" y="680" width="130" height="11" rx="3" fill="#dbeafe"/><text x="278" y="690">0.00</text>
+    <text x="50" y="712" font-weight="700" fill="#1e3a8a">review</text><rect x="140" y="702" width="130" height="11" rx="3" fill="#2563eb"/><text x="278" y="712" font-weight="700" fill="#1e3a8a">1.00</text>
+    <text x="50" y="734">return</text><rect x="140" y="724" width="130" height="11" rx="3" fill="#dbeafe"/><text x="278" y="734">0.00</text>
+    <text x="50" y="756">insufficient</text><rect x="140" y="746" width="130" height="11" rx="3" fill="#dbeafe"/><text x="278" y="756">0.00</text>
+  </g>
+
+  <!-- noul -->
+  <rect x="350" y="598" width="300" height="180" rx="12" fill="#f9fafb" stroke="#d1d5db"/>
+  <text x="368" y="624" font-size="15" font-weight="700" font-family="Menlo, Consolas, monospace" fill="#111827">noul</text>
+  <text x="368" y="644" font-size="12" fill="#4b5563">Yes or no. Keys are false, then true.</text>
+  <text x="368" y="662" font-size="11" fill="#6b7280">Refund policy, USD 42 order, 1 refund this month</text>
+  <g font-size="12" fill="#374151">
+    <text x="368" y="690">false (No)</text><rect x="458" y="680" width="130" height="11" rx="3" fill="#dbeafe"/><rect x="458" y="680" width="1.4" height="11" fill="#2563eb"/><text x="596" y="690">0.011</text>
+    <text x="368" y="712" font-weight="700" fill="#1e3a8a">true (Yes)</text><rect x="458" y="702" width="130" height="11" rx="3" fill="#dbeafe"/><rect x="458" y="702" width="128.6" height="11" rx="3" fill="#2563eb"/><text x="596" y="712" font-weight="700" fill="#1e3a8a">0.989</text>
+  </g>
+  <text x="368" y="752" font-size="11" fill="#6b7280">Returns the probability of true.</text>
+
+  <!-- score -->
+  <rect x="668" y="598" width="300" height="180" rx="12" fill="#f9fafb" stroke="#d1d5db"/>
+  <text x="686" y="624" font-size="15" font-weight="700" font-family="Menlo, Consolas, monospace" fill="#111827">score</text>
+  <text x="686" y="644" font-size="12" fill="#4b5563">Pick an ordered level, 0 to n.</text>
+  <text x="686" y="662" font-size="11" fill="#6b7280">Claim rubric, USD 7,200 estimate, 12-day policy</text>
+  <g font-size="12" fill="#374151">
+    <text x="686" y="690">level 0</text><rect x="760" y="680" width="130" height="11" rx="3" fill="#dbeafe"/><text x="898" y="690">0.000</text>
+    <text x="686" y="712">level 1</text><rect x="760" y="702" width="130" height="11" rx="3" fill="#dbeafe"/><text x="898" y="712">0.001</text>
+    <text x="686" y="734">level 2</text><rect x="760" y="724" width="130" height="11" rx="3" fill="#dbeafe"/><rect x="760" y="724" width="1" height="11" fill="#2563eb"/><text x="898" y="734">0.006</text>
+    <text x="686" y="756" font-weight="700" fill="#1e3a8a">level 3</text><rect x="760" y="746" width="130" height="11" rx="3" fill="#dbeafe"/><rect x="760" y="746" width="129.1" height="11" rx="3" fill="#2563eb"/><text x="898" y="756" font-weight="700" fill="#1e3a8a">0.993</text>
+  </g>
 </svg>

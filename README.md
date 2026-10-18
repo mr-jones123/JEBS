@@ -50,6 +50,7 @@ Use Python 3.12 and the locked training environment. Local corpus verification a
 
 ```sh
 uv sync --frozen --python 3.12 --extra training
+.venv/bin/hf download Qwen/Qwen3-VL-4B-Instruct --revision ebb281ec70b05090aa6165b016eac8ec08e71b17 --cache-dir data/raw/processor-cache
 uv run --with pytest python -m pytest tests -q
 .venv/bin/python -m mdprep.verify --root .
 .venv/bin/python -m mdprep.processor_check --root .
