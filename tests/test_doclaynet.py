@@ -180,6 +180,8 @@ class DocLayNetConversionTests(unittest.TestCase):
             })
             self.assertFalse(first["source_scope"]["train_fetched"])
 
+    @unittest.skipUnless((Path(__file__).resolve().parents[1] / ".audit/doclaynet-conversion.json").is_file(),
+                         "needs the local DocLayNet conversion receipt, which is not published")
     def test_checked_candidate_receipt_and_files_are_self_consistent(self):
         root = Path(__file__).resolve().parents[1]
         receipt_path = root / ".audit" / "doclaynet-conversion.json"

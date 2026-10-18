@@ -50,7 +50,7 @@ Use Python 3.12 and the locked training environment. Local corpus verification a
 
 ```sh
 uv sync --frozen --python 3.12 --extra training
-.venv/bin/python -m unittest discover -s tests
+uv run --with pytest python -m pytest tests -q
 .venv/bin/python -m mdprep.verify --root .
 .venv/bin/python -m mdprep.processor_check --root .
 .venv/bin/python -m mdprep.shortcut_check --root . --output .audit/generated-shortcuts-current.json
@@ -63,11 +63,11 @@ Smoke output directories must be new. Complete the pinned base download before m
 
 ## Pod execution
 
-Use one RTX 4090 with 24 GB VRAM, 31 GB host RAM, and 12 vCPU. The locked Linux stack uses CUDA 13 dependencies. Its host needs NVIDIA driver 580 or newer. A different container cannot upgrade the host driver. `RUNPOD.md` contains transfer, installation, launch, recovery, and final-evaluation commands.
+Use one RTX 4090 or RTX 3090 with 24 GB VRAM. The CUDA preflight refuses any other GPU. The locked Linux stack uses CUDA 13 dependencies, so the host needs NVIDIA driver 580 or newer. A different container cannot upgrade the host driver. `RUNPOD.md` contains transfer, installation, launch, recovery, and final-evaluation commands. `scripts/runpod_pod.py` creates the network volume and pod, and `scripts/v3-run.sh` and `scripts/v3-finish.sh` run a full cycle on it.
 
 The public CLI supervises paid work in its own process group. It requests a reserve-aware graceful checkpoint and enforces a process deadline. It does not stop the Pod or provider billing. The operator must stop the Pod or configure a separate provider-side stop.
 
-The ledger uses an $8 process allowance at the quoted $0.89/hour, with $2 reserved from the initial $10 for setup/storage uncertainty. It counts allocation wall time, including setup and downtime. A full epoch is attempted only if measured preflight forecasts and fixed-question diagnostic/pilot gates permit it. No total-cost or quality guarantee is made.
+The ledger allows $8 of elapsed time, priced at the pod's own `costPerHr`: 57,600 seconds at $0.50/hour and 32,359 seconds at $0.89/hour. It counts allocation wall time, including setup and downtime. A full epoch is attempted only if measured preflight forecasts and fixed-question diagnostic/pilot gates permit it. No total-cost or quality guarantee is made.
 
 ## Outputs and scientific limits
 

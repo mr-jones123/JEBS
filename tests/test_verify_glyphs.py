@@ -14,6 +14,8 @@ from mdprep.verify_visuals import extract_visual, visual_answer
 
 FONT = (Path(__file__).resolve().parents[1] /
         "data/raw/visuals/atkinson-hyperlegible/AtkinsonHyperlegible-Regular.ttf")
+if not FONT.is_file():
+    raise unittest.SkipTest("needs the pinned font that data preparation downloads into data/raw")
 THEMES = (
     ("#fffdf8", "#17212b", "#19647e", "#dceff4"),
     ("#fffaf3", "#261f2d", "#8a4f2d", "#f3dfcf"),

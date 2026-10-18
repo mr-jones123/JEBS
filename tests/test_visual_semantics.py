@@ -273,6 +273,10 @@ class ConstructionTests(unittest.TestCase):
                         self.assertEqual(visual_answer(row, visible), expected)
 
 
+@unittest.skipUnless(
+    (Path(__file__).resolve().parents[1]
+     / "data/raw/visuals/atkinson-hyperlegible/AtkinsonHyperlegible-Regular.ttf").is_file(),
+    "needs the pinned font that data preparation downloads into data/raw")
 class PixelEvidenceTests(unittest.TestCase):
     def test_absent_complete_and_incomplete_optional_strips(self):
         with tempfile.TemporaryDirectory() as directory:

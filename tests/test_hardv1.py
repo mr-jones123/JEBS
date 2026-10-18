@@ -250,6 +250,8 @@ class HardV1ConversionTests(unittest.TestCase):
         self.assertEqual(collections.Counter(row["split"] for row in first),
                          {"dev": 2, "calibration": 2})
 
+    @unittest.skipUnless((Path(__file__).resolve().parents[1] / ".audit/hardv1-conversion.json").is_file(),
+                         "needs the local hard-v1 conversion receipt, which is not published")
     def test_checked_in_receipt_reports_family_coverage(self):
         root = Path(__file__).resolve().parents[1]
         receipt = json.loads((root / ".audit" / "hardv1-conversion.json").read_text())
