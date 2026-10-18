@@ -1,0 +1,23 @@
+JEBS-4B
+Copyright 2026 Experimental Machines
+
+This release contains a LoRA adapter, a decision readout, calibration data, and runtime
+source code licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Base model
+  JEBS-4B adapts Qwen/Qwen3-VL-4B-Instruct (revision ebb281ec70b05090aa6165b016eac8ec08e71b17),
+  Copyright the Qwen team, Alibaba Cloud, licensed under the Apache License, Version 2.0.
+  The base weights are not included. Download them from https://huggingface.co/Qwen/Qwen3-VL-4B-Instruct.
+  The model/processor directory holds the Qwen tokenizer and processor configuration,
+  under the same license.
+
+Training data
+  BANKING77 (PolyAI), CC BY 4.0. Used as intent-routing questions.
+  Open Images V7 (Google), annotations CC BY 4.0; each photograph keeps its own CC BY or
+  CC0 license. No images are redistributed in this release.
+  hard-v1 skill records from https://github.com/jaredpalmer/kev, Apache License 2.0.
+  Procedurally generated rules, rendered documents, charts, and videos created by this
+  project. Labels come from code, not from people or other models.
+
+Evaluation-only data
+  DocLayNet regions (IBM), CDLA-Permissive-1.0. Not used for training.

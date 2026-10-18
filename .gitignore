@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Locked test splits, media, and the base-model cache. Publishing the locked
+# tests would make every later score on them meaningless.
+data/
+dist/
+dist-accepted-*/
+.audit/
+release/
+
+# Instructions for coding agents, with local paths.
+AGENT_CONTRACTS.md
+SUBAGENT_TRAINING_PLAN.md
