@@ -26,6 +26,17 @@ from mdtrain.storage import atomic_json, json_safe, seal, sync_directory, verify
 PROJECTIONS = ("self_attn.q_proj", "self_attn.k_proj", "self_attn.v_proj", "self_attn.o_proj",
                "mlp.gate_proj", "mlp.up_proj", "mlp.down_proj")
 POINTER_EQUATION = "two-projection-dot-256-v1"
+INFERENCE_DEVICES = ("cpu", "cuda", "mps")
+# The base weights live in host RAM on CPU and in unified memory on Apple GPUs.
+HOST_MEMORY_DEVICES = ("cpu", "mps")
+
+
+def admit_host_memory(total_bytes: int, device: str) -> None:
+    needed = total_bytes + 1536 * 1024 ** 2
+    available = psutil.virtual_memory().available
+    if needed > 11 * 1024 ** 3 or needed + 2 * 1024 ** 3 > available:
+        raise MemoryError(f"Loading the BF16 base on {device} needs {(needed + 2 * 1024 ** 3) / 1024 ** 3:.1f} GiB "
+                          f"of free memory; {available / 1024 ** 3:.1f} GiB is available. Close other apps and retry.")
 
 
 def environment() -> dict:
@@ -70,13 +81,15 @@ def load_body(root: Path, *, device: str) -> tuple[Qwen3VLModel, dict]:
     shards = sorted(set(index["weight_map"].values()))
     if not all((snapshot / shard).is_file() for shard in shards):
         raise FileNotFoundError("Pinned base shards are not completely cached; downloads are disabled")
-    if device == "cpu":
-        estimated = int(index["metadata"]["total_size"]) + 1536 * 1024 ** 2
-        if estimated > 11 * 1024 ** 3 or estimated + 2 * 1024 ** 3 > psutil.virtual_memory().available:
-            raise MemoryError("Explicit real BF16 CPU memory admission refused loading")
+    if device == "mps" and not torch.backends.mps.is_available():
+        raise ValueError("The mps device needs Apple Silicon and a PyTorch build with MPS support")
+    if device in HOST_MEMORY_DEVICES:
+        admit_host_memory(int(index["metadata"]["total_size"]), device)
+    # Loading on CPU and then copying to MPS would hold two copies in unified memory.
     body, loading = Qwen3VLModel.from_pretrained(
         str(snapshot), local_files_only=True, dtype=torch.bfloat16,
-        attn_implementation="sdpa", low_cpu_mem_usage=True, output_loading_info=True)
+        attn_implementation="sdpa", low_cpu_mem_usage=True, output_loading_info=True,
+        device_map={"": "mps"} if device == "mps" else None)
     report = json_safe(loading)
     unexpected = [name for name in report.get("unexpected_keys", [])
                   if name not in ("lm_head.weight",)]

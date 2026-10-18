@@ -11,6 +11,7 @@ from mdtrain.budget import BudgetLedger, BudgetStopped
 from mdtrain.deadline import ledger_deadline, supervise
 from mdtrain.data import DEFAULT_SCHEDULE, SCHEDULES
 from mdtrain.storage import writer_lock
+from mdtrain.engine import INFERENCE_DEVICES
 
 
 def parser() -> argparse.ArgumentParser:
@@ -41,7 +42,9 @@ def parser() -> argparse.ArgumentParser:
         if name in ("preflight", "train", "resume", "pipeline"):
             command.add_argument("--budget-ledger", type=Path, required=True)
         if name in ("predict", "evaluate", "finalize"):
-            command.add_argument("--device", choices=("cpu", "cuda"), required=True)
+            # Finalize fits calibration for a paid run, which is CUDA or CPU only.
+            command.add_argument("--device", required=True,
+                                 choices=INFERENCE_DEVICES if name != "finalize" else ("cpu", "cuda"))
             command.add_argument("--budget-ledger", type=Path)
             command.add_argument("--output", type=Path, required=True)
         if name in ("predict", "evaluate"):
