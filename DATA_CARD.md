@@ -70,7 +70,7 @@ BANKING77 holds out intent classes within one source. Open Images holds out tran
 
 Generated visuals hold out layouts. Generated text and video hold out task families. Source-specific origin and axis declarations are enforced rather than accepted as arbitrary enums. None of these sets is a real source-domain holdout. Unknown pretraining exposure remains unexcluded.
 
-## Licensing and private distribution
+## Licensing and distribution
 
 BANKING77 is pinned to `PolyAI-LDN/task-specific-datasets` revision `57ec275d8078af65b7731c2a98be812d844a6d6b`. Its CC BY 4.0 text, attribution, and conversion notice travel with the data.
 
@@ -78,7 +78,7 @@ Each Open Images photograph retains its exact original license URL, author, land
 
 The Atkinson Hyperlegible Regular font is pinned to Google Fonts revision `1cb311624b2ddf88e9e37873999d165a8cd28b46`. Its SHA256 is `7fb917c89019896d0b52ee84b7cbb3304c18cb90b19a62f5e32712bd23e97669`. The font and SIL Open Font License accompany each scoped data archive. Generated videos contain no third-party media or fonts.
 
-No public license is assigned here to the user's original code, generated scenes, or trained artifact. Keep the handoff private pending release authorization and license review. Base model weights, credentials, and caches are not in the archives.
+The code and the trained v3 artifact are public under Apache License 2.0, at [github.com/mr-jones123/JEBS](https://github.com/mr-jones123/JEBS) and [experimentalmachines/JEBS-4B](https://huggingface.co/experimentalmachines/JEBS-4B). The prepared corpus, the generated scenes, and the locked test splits are not published. Base model weights, credentials, and caches are not in the archives.
 
 ## Review and archive boundary
 
